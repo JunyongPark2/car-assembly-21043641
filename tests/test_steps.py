@@ -1,8 +1,8 @@
 import pytest
 
-from parts import CarType, EngineType, BrakeType, SteeringType
-from selection import CarSelection
-from steps import build_first_step, PartSelectionStep, RunTestStep
+from car_assembly.parts import CarType, EngineType, BrakeType, SteeringType
+from car_assembly.selection import CarSelection
+from car_assembly.steps import build_first_step, PartSelectionStep, RunTestStep
 
 
 @pytest.fixture

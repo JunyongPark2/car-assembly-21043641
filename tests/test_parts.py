@@ -1,6 +1,6 @@
 import pytest
 
-from parts import CarType, EngineType, BrakeType, SteeringType
+from car_assembly.parts import CarType, EngineType, BrakeType, SteeringType
 
 
 @pytest.mark.parametrize(

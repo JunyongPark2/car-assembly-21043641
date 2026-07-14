@@ -1,8 +1,8 @@
 import pytest
 
-from parts import CarType, EngineType, BrakeType, SteeringType
-from selection import CarSelection
-from rules import find_violations
+from car_assembly.parts import CarType, EngineType, BrakeType, SteeringType
+from car_assembly.selection import CarSelection
+from car_assembly.rules import find_violations
 
 
 def _selection(car_type, engine, brake, steering):

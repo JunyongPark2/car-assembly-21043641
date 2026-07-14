@@ -1,4 +1,4 @@
-from app import CarAssemblyApp
+from car_assembly.app import CarAssemblyApp
 from conftest import FakeInput, FakeRenderer
 
 

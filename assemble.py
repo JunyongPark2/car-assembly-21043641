@@ -1,4 +1,4 @@
-from app import CarAssemblyApp
+from car_assembly.app import CarAssemblyApp
 
 
 def main(renderer=None, input_provider=None, delay_fn=None):

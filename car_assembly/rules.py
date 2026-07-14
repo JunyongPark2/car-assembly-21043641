@@ -1,7 +1,7 @@
 from typing import List, Optional, Protocol
 
-from parts import CarType, EngineType, BrakeType, SteeringType
-from selection import CarSelection
+from .parts import CarType, EngineType, BrakeType, SteeringType
+from .selection import CarSelection
 
 
 class CompatibilityRule(Protocol):

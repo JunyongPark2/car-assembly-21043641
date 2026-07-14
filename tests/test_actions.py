@@ -1,8 +1,8 @@
 import pytest
 
-from parts import CarType, EngineType, BrakeType, SteeringType
-from selection import CarSelection
-from actions import (
+from car_assembly.parts import CarType, EngineType, BrakeType, SteeringType
+from car_assembly.selection import CarSelection
+from car_assembly.actions import (
     select_car_type,
     select_engine,
     select_brake,

@@ -3,25 +3,55 @@
 `PLAN.md`의 Phase 1~7을 거친 뒤의 최종 모듈 구조. 리팩토링 전 상태와 문제점은
 `ANALYSIS.md`(역사적 기록)를 참고.
 
+## 디렉토리 구조
+
+```
+car-assembly/
+├── assemble.py              # 실행 진입점 (CLI 스크립트)
+├── car_assembly/            # 도메인/애플리케이션 패키지
+│   ├── __init__.py
+│   ├── parts.py
+│   ├── selection.py
+│   ├── rules.py
+│   ├── actions.py
+│   ├── steps.py
+│   ├── io_adapters.py
+│   └── app.py
+└── tests/
+    ├── conftest.py
+    ├── test_parts.py
+    ├── test_selection.py
+    ├── test_rules.py
+    ├── test_actions.py
+    ├── test_steps.py
+    ├── test_io_adapters.py
+    ├── test_app.py
+    └── test_entrypoint.py
+```
+
+패키지 내부 모듈은 상대 임포트(`from .parts import ...`)로 서로를 참조한다.
+루트의 `assemble.py`만 `from car_assembly.app import CarAssemblyApp`로 패키지를
+가져와 실행하는 얇은 스크립트다.
+
 ## 모듈 구성
 
 | 모듈 | 책임 | 의존 |
 |---|---|---|
-| `parts.py` | `CarType/EngineType/BrakeType/SteeringType` Enum + 표시 라벨 | 없음 |
-| `selection.py` | `CarSelection` — 사용자가 지금까지 고른 부품을 들고 다니는 값 객체 | `parts` |
-| `rules.py` | `COMPATIBILITY_RULES` 전략 리스트 + `find_violations()` | `parts`, `selection` |
-| `actions.py` | 순수 도메인 함수 (`select_*`, `is_valid_check`, `run_produced_car`, `test_produced_car`) — 문자열을 반환할 뿐 I/O 없음 | `parts`, `rules` |
-| `steps.py` | `Step` 프로토콜(`render/validate/previous/apply`) + `PartSelectionStep`/`RunTestStep` + `build_first_step()` 체인 조립 | `selection`, `actions` |
-| `io_adapters.py` | `Renderer`/`InputProvider` 프로토콜 + `ConsoleRenderer`/`ConsoleInput`/`delay` 구현체 | 없음 (표준 라이브러리만) |
-| `app.py` | `CarAssemblyApp` — 합성근(composition root). Renderer/InputProvider/delay_fn과 Step 체인을 엮어 메인 루프 실행 | `selection`, `steps`, `io_adapters` |
-| `assemble.py` | 실행 진입점. `CarAssemblyApp`을 생성해 실행하는 얇은 wrapper | `app` |
+| `car_assembly/parts.py` | `CarType/EngineType/BrakeType/SteeringType` Enum + 표시 라벨 | 없음 |
+| `car_assembly/selection.py` | `CarSelection` — 사용자가 지금까지 고른 부품을 들고 다니는 값 객체 | `parts` |
+| `car_assembly/rules.py` | `COMPATIBILITY_RULES` 전략 리스트 + `find_violations()` | `parts`, `selection` |
+| `car_assembly/actions.py` | 순수 도메인 함수 (`select_*`, `is_valid_check`, `run_produced_car`, `test_produced_car`) — 문자열을 반환할 뿐 I/O 없음 | `parts`, `rules` |
+| `car_assembly/steps.py` | `Step` 프로토콜(`render/validate/previous/apply`) + `PartSelectionStep`/`RunTestStep` + `build_first_step()` 체인 조립 | `selection`, `actions` |
+| `car_assembly/io_adapters.py` | `Renderer`/`InputProvider` 프로토콜 + `ConsoleRenderer`/`ConsoleInput`/`delay` 구현체 | 없음 (표준 라이브러리만) |
+| `car_assembly/app.py` | `CarAssemblyApp` — 합성근(composition root). Renderer/InputProvider/delay_fn과 Step 체인을 엮어 메인 루프 실행 | `selection`, `steps`, `io_adapters` |
+| `assemble.py` | 실행 진입점. `CarAssemblyApp`을 생성해 실행하는 얇은 wrapper | `car_assembly.app` |
 
 ## 의존 방향
 
 ```
-assemble.py -> app.py -> steps.py -> actions.py -> rules.py -> parts.py
-                     \-> io_adapters.py         \-> selection.py
-                     \-> selection.py
+assemble.py -> car_assembly/app.py -> steps.py -> actions.py -> rules.py -> parts.py
+                                  \-> io_adapters.py         \-> selection.py
+                                  \-> selection.py
 ```
 
 도메인 계층(`parts`, `selection`, `rules`, `actions`, `steps`)은 `io_adapters`에

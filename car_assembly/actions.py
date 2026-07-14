@@ -1,5 +1,5 @@
-from parts import EngineType
-from rules import find_violations
+from .parts import EngineType
+from .rules import find_violations
 
 
 def select_car_type(selection, a):

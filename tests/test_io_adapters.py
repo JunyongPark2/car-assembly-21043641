@@ -1,6 +1,6 @@
 import time
 
-from io_adapters import ConsoleRenderer, ConsoleInput, delay
+from car_assembly.io_adapters import ConsoleRenderer, ConsoleInput, delay
 
 
 def test_console_renderer_show_prints_text(capsys):

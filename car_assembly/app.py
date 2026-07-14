@@ -1,6 +1,6 @@
-from selection import CarSelection
-from steps import build_first_step
-from io_adapters import ConsoleRenderer, ConsoleInput, delay
+from .selection import CarSelection
+from .steps import build_first_step
+from .io_adapters import ConsoleRenderer, ConsoleInput, delay
 
 
 class CarAssemblyApp:

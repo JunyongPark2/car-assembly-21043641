@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from parts import CarType, EngineType, BrakeType, SteeringType
+from .parts import CarType, EngineType, BrakeType, SteeringType
 
 
 @dataclass
