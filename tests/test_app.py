@@ -1,33 +1,14 @@
-from assemble import main
-
-
-class FakeInput:
-    """Feeds a scripted sequence of answers, standing in for stdin."""
-
-    def __init__(self, answers):
-        self._answers = list(answers)
-
-    def read(self, prompt):
-        return self._answers.pop(0)
-
-
-class FakeRenderer:
-    """Collects every rendered frame instead of writing to stdout."""
-
-    def __init__(self):
-        self.frames = []
-        self.clear_count = 0
-
-    def show(self, text=""):
-        self.frames.append(text)
-
-    def clear(self):
-        self.clear_count += 1
+from app import CarAssemblyApp
+from conftest import FakeInput, FakeRenderer
 
 
 def _run(answers):
     renderer = FakeRenderer()
-    main(renderer=renderer, input_provider=FakeInput(answers), delay_fn=lambda ms: None)
+    CarAssemblyApp(
+        renderer=renderer,
+        input_provider=FakeInput(answers),
+        delay_fn=lambda ms: None,
+    ).run()
     return renderer
 
 
@@ -68,3 +49,22 @@ def test_back_navigation_returns_to_previous_step():
     renderer = _run(["1", "0", "2", "1", "1", "1", "exit"])
     joined = "\n".join(renderer.frames)
     assert "차량 타입으로 SUV을 선택하셨습니다." in joined
+
+
+def test_run_test_step_back_resets_to_car_type_step():
+    # From the final step, "back" goes all the way to step 0, not to steering.
+    renderer = _run(["1", "1", "1", "1", "0", "2", "1", "1", "1", "exit"])
+    joined = "\n".join(renderer.frames)
+    assert joined.count("차량 타입으로 SUV을 선택하셨습니다.") == 1
+
+
+def test_broken_engine_prevents_car_from_moving():
+    renderer = _run(["1", "4", "1", "1", "1", "exit"])
+    joined = "\n".join(renderer.frames)
+    assert "엔진이 고장나있습니다." in joined
+    assert "자동차가 움직이지 않습니다." in joined
+
+
+def test_clear_is_called_before_every_menu_render():
+    renderer = _run(["1", "1", "1", "1", "exit"])
+    assert renderer.clear_count >= 5
