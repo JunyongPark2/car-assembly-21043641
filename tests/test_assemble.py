@@ -1,11 +1,8 @@
 import pytest
 
 import assemble
+from parts import CarType, EngineType, BrakeType, SteeringType
 from assemble import (
-    SEDAN, SUV, TRUCK,
-    GM, TOYOTA, WIA,
-    MANDO, CONTINENTAL, BOSCH_B,
-    BOSCH_S, MOBIS,
     is_valid_range,
     select_car_type,
     select_engine,
@@ -15,6 +12,11 @@ from assemble import (
     run_produced_car,
     test_produced_car,
 )
+
+SEDAN, SUV, TRUCK = CarType.SEDAN, CarType.SUV, CarType.TRUCK
+GM, TOYOTA, WIA = EngineType.GM, EngineType.TOYOTA, EngineType.WIA
+MANDO, CONTINENTAL, BOSCH_B = BrakeType.MANDO, BrakeType.CONTINENTAL, BrakeType.BOSCH
+BOSCH_S, MOBIS = SteeringType.BOSCH, SteeringType.MOBIS
 
 
 # ---------------------------------------------------------------------------
@@ -81,7 +83,7 @@ def test_valid_range_step4_rejects_outside_0_to_2(ans):
 )
 def test_select_car_type_sets_global_and_prints(capsys, ans, expected_snippet):
     select_car_type(ans)
-    assert assemble.q0 == ans
+    assert assemble.q0 == CarType(ans)
     assert expected_snippet in capsys.readouterr().out
 
 
@@ -91,7 +93,7 @@ def test_select_car_type_sets_global_and_prints(capsys, ans, expected_snippet):
 )
 def test_select_engine_sets_global_and_prints(capsys, ans, expected_snippet):
     select_engine(ans)
-    assert assemble.q1 == ans
+    assert assemble.q1 == EngineType(ans)
     assert expected_snippet in capsys.readouterr().out
 
 
@@ -101,7 +103,7 @@ def test_select_engine_sets_global_and_prints(capsys, ans, expected_snippet):
 )
 def test_select_brake_sets_global_and_prints(capsys, ans, expected_snippet):
     select_brake(ans)
-    assert assemble.q2 == ans
+    assert assemble.q2 == BrakeType(ans)
     assert expected_snippet in capsys.readouterr().out
 
 
@@ -111,7 +113,7 @@ def test_select_brake_sets_global_and_prints(capsys, ans, expected_snippet):
 )
 def test_select_steering_sets_global_and_prints(capsys, ans, expected_snippet):
     select_steering(ans)
-    assert assemble.q3 == ans
+    assert assemble.q3 == SteeringType(ans)
     assert expected_snippet in capsys.readouterr().out
 
 
@@ -174,7 +176,7 @@ def test_run_produced_car_incompatible_parts_does_not_run(capsys):
 
 
 def test_run_produced_car_broken_engine_does_not_move(capsys):
-    _set_selection(SEDAN, 4, MANDO, BOSCH_S)
+    _set_selection(SEDAN, EngineType.BROKEN, MANDO, BOSCH_S)
     run_produced_car()
     out = capsys.readouterr().out
     assert "엔진이 고장나있습니다" in out

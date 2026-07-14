@@ -1,6 +1,8 @@
 import sys
 import time
 
+from parts import CarType, EngineType, BrakeType, SteeringType
+
 CLEAR_SCREEN = "\033[H\033[2J"
 
 CarType_Q = 0
@@ -8,21 +10,6 @@ Engine_Q = 1
 brakeSystem_Q = 2
 SteeringSystem_Q = 3
 Run_Test = 4
-
-SEDAN = 1
-SUV = 2
-TRUCK = 3
-
-GM = 1
-TOYOTA = 2
-WIA = 3
-
-MANDO = 1
-CONTINENTAL = 2
-BOSCH_B = 3
-
-BOSCH_S = 1
-MOBIS = 2
 
 q0 = 0
 q1 = 0
@@ -106,58 +93,41 @@ def is_valid_range(step, ans):
 
 def select_car_type(a):
     global q0
-    q0 = a
-    if a == 1:
-        print("차량 타입으로 Sedan을 선택하셨습니다.")
-    elif a == 2:
-        print("차량 타입으로 SUV을 선택하셨습니다.")
-    elif a == 3:
-        print("차량 타입으로 Truck을 선택하셨습니다.")
+    q0 = CarType(a)
+    print(f"차량 타입으로 {q0.label}을 선택하셨습니다.")
 
 
 def select_engine(a):
     global q1
-    q1 = a
-    if a == 1:
-        print("GM 엔진을 선택하셨습니다.")
-    elif a == 2:
-        print("TOYOTA 엔진을 선택하셨습니다.")
-    elif a == 3:
-        print("WIA 엔진을 선택하셨습니다.")
-    elif a == 4:
+    q1 = EngineType(a)
+    if q1 == EngineType.BROKEN:
         print("고장난 엔진을 선택하셨습니다.")
+    else:
+        print(f"{q1.label} 엔진을 선택하셨습니다.")
 
 
 def select_brake(a):
     global q2
-    q2 = a
-    if a == 1:
-        print("MANDO 제동장치를 선택하셨습니다.")
-    elif a == 2:
-        print("CONTINENTAL 제동장치를 선택하셨습니다.")
-    elif a == 3:
-        print("BOSCH 제동장치를 선택하셨습니다.")
+    q2 = BrakeType(a)
+    print(f"{q2.name} 제동장치를 선택하셨습니다.")
 
 
 def select_steering(a):
     global q3
-    q3 = a
-    if a == 1:
-        print("BOSCH 조향장치를 선택하셨습니다.")
-    elif a == 2:
-        print("MOBIS 조향장치를 선택하셨습니다.")
+    q3 = SteeringType(a)
+    print(f"{q3.name} 조향장치를 선택하셨습니다.")
 
 
 def is_valid_check():
-    if q0 == SEDAN and q2 == CONTINENTAL:
+    if q0 == CarType.SEDAN and q2 == BrakeType.CONTINENTAL:
         return False
-    if q0 == SUV and q1 == TOYOTA:
+    if q0 == CarType.SUV and q1 == EngineType.TOYOTA:
         return False
-    if q0 == TRUCK and q1 == WIA:
+    if q0 == CarType.TRUCK and q1 == EngineType.WIA:
         return False
-    if q0 == TRUCK and q2 == MANDO:
+    if q0 == CarType.TRUCK and q2 == BrakeType.MANDO:
         return False
-    if q2 == BOSCH_B and q3 != BOSCH_S:
+    if q2 == BrakeType.BOSCH and q3 != SteeringType.BOSCH:
         return False
     return True
 
@@ -166,50 +136,29 @@ def run_produced_car():
     if not is_valid_check():
         print("자동차가 동작되지 않습니다")
         return
-    if q1 == 4:
+    if q1 == EngineType.BROKEN:
         print("엔진이 고장나있습니다.")
         print("자동차가 움직이지 않습니다.")
         return
 
-    if q0 == 1:
-        print("Car Type : Sedan")
-    elif q0 == 2:
-        print("Car Type : SUV")
-    elif q0 == 3:
-        print("Car Type : Truck")
-
-    if q1 == 1:
-        print("Engine   : GM")
-    elif q1 == 2:
-        print("Engine   : TOYOTA")
-    elif q1 == 3:
-        print("Engine   : WIA")
-
-    if q2 == 1:
-        print("Brake    : Mando")
-    elif q2 == 2:
-        print("Brake    : Continental")
-    elif q2 == 3:
-        print("Brake    : Bosch")
-
-    if q3 == 1:
-        print("Steering : Bosch")
-    elif q3 == 2:
-        print("Steering : Mobis")
+    print(f"Car Type : {q0.label}")
+    print(f"Engine   : {q1.label}")
+    print(f"Brake    : {q2.label}")
+    print(f"Steering : {q3.label}")
 
     print("자동차가 동작됩니다.")
 
 
 def test_produced_car():
-    if q0 == SEDAN and q2 == CONTINENTAL:
+    if q0 == CarType.SEDAN and q2 == BrakeType.CONTINENTAL:
         print("FAIL\nSedan에는 Continental제동장치 사용 불가")
-    elif q0 == SUV and q1 == TOYOTA:
+    elif q0 == CarType.SUV and q1 == EngineType.TOYOTA:
         print("FAIL\nSUV에는 TOYOTA엔진 사용 불가")
-    elif q0 == TRUCK and q1 == WIA:
+    elif q0 == CarType.TRUCK and q1 == EngineType.WIA:
         print("FAIL\nTruck에는 WIA엔진 사용 불가")
-    elif q0 == TRUCK and q2 == MANDO:
+    elif q0 == CarType.TRUCK and q2 == BrakeType.MANDO:
         print("FAIL\nTruck에는 Mando제동장치 사용 불가")
-    elif q2 == BOSCH_B and q3 != BOSCH_S:
+    elif q2 == BrakeType.BOSCH and q3 != SteeringType.BOSCH:
         print("FAIL\nBosch제동장치에는 Bosch조향장치 이외 사용 불가")
     else:
         print("PASS")
