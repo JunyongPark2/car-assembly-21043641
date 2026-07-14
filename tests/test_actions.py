@@ -2,8 +2,7 @@ import pytest
 
 from parts import CarType, EngineType, BrakeType, SteeringType
 from selection import CarSelection
-from assemble import (
-    validate_range,
+from assemble_actions import (
     select_car_type,
     select_engine,
     select_brake,
@@ -20,62 +19,8 @@ BOSCH_S, MOBIS = SteeringType.BOSCH, SteeringType.MOBIS
 
 
 # ---------------------------------------------------------------------------
-# validate_range
-# ---------------------------------------------------------------------------
-
-@pytest.mark.parametrize("ans", [1, 2, 3])
-def test_validate_range_step0_accepts_1_to_3(ans):
-    assert validate_range(0, ans) is None
-
-
-@pytest.mark.parametrize("ans", [0, 4, -1])
-def test_validate_range_step0_rejects_outside_1_to_3(ans):
-    assert validate_range(0, ans) is not None
-
-
-@pytest.mark.parametrize("ans", [0, 1, 2, 3, 4])
-def test_validate_range_step1_accepts_0_to_4(ans):
-    assert validate_range(1, ans) is None
-
-
-@pytest.mark.parametrize("ans", [-1, 5])
-def test_validate_range_step1_rejects_outside_0_to_4(ans):
-    assert validate_range(1, ans) is not None
-
-
-@pytest.mark.parametrize("ans", [0, 1, 2, 3])
-def test_validate_range_step2_accepts_0_to_3(ans):
-    assert validate_range(2, ans) is None
-
-
-@pytest.mark.parametrize("ans", [-1, 4])
-def test_validate_range_step2_rejects_outside_0_to_3(ans):
-    assert validate_range(2, ans) is not None
-
-
-@pytest.mark.parametrize("ans", [0, 1, 2])
-def test_validate_range_step3_accepts_0_to_2(ans):
-    assert validate_range(3, ans) is None
-
-
-@pytest.mark.parametrize("ans", [-1, 3])
-def test_validate_range_step3_rejects_outside_0_to_2(ans):
-    assert validate_range(3, ans) is not None
-
-
-@pytest.mark.parametrize("ans", [0, 1, 2])
-def test_validate_range_step4_accepts_0_to_2(ans):
-    assert validate_range(4, ans) is None
-
-
-@pytest.mark.parametrize("ans", [-1, 3])
-def test_validate_range_step4_rejects_outside_0_to_2(ans):
-    assert validate_range(4, ans) is not None
-
-
-# ---------------------------------------------------------------------------
 # selection functions: they mutate a CarSelection and return a confirmation
-# message (no direct I/O - Phase 4 moved printing to the app/adapter layer)
+# message (no direct I/O - printing happens in the app/adapter layer)
 # ---------------------------------------------------------------------------
 
 @pytest.mark.parametrize(
