@@ -2,6 +2,7 @@ import sys
 import time
 
 from parts import CarType, EngineType, BrakeType, SteeringType
+from selection import CarSelection
 
 CLEAR_SCREEN = "\033[H\033[2J"
 
@@ -10,12 +11,6 @@ Engine_Q = 1
 brakeSystem_Q = 2
 SteeringSystem_Q = 3
 Run_Test = 4
-
-q0 = 0
-q1 = 0
-q2 = 0
-q3 = 0
-q4 = 0
 
 
 def delay(ms):
@@ -91,74 +86,70 @@ def is_valid_range(step, ans):
     return True
 
 
-def select_car_type(a):
-    global q0
-    q0 = CarType(a)
-    print(f"차량 타입으로 {q0.label}을 선택하셨습니다.")
+def select_car_type(selection, a):
+    car_type = selection.set_car_type(a)
+    print(f"차량 타입으로 {car_type.label}을 선택하셨습니다.")
 
 
-def select_engine(a):
-    global q1
-    q1 = EngineType(a)
-    if q1 == EngineType.BROKEN:
+def select_engine(selection, a):
+    engine = selection.set_engine(a)
+    if engine == EngineType.BROKEN:
         print("고장난 엔진을 선택하셨습니다.")
     else:
-        print(f"{q1.label} 엔진을 선택하셨습니다.")
+        print(f"{engine.label} 엔진을 선택하셨습니다.")
 
 
-def select_brake(a):
-    global q2
-    q2 = BrakeType(a)
-    print(f"{q2.name} 제동장치를 선택하셨습니다.")
+def select_brake(selection, a):
+    brake = selection.set_brake(a)
+    print(f"{brake.name} 제동장치를 선택하셨습니다.")
 
 
-def select_steering(a):
-    global q3
-    q3 = SteeringType(a)
-    print(f"{q3.name} 조향장치를 선택하셨습니다.")
+def select_steering(selection, a):
+    steering = selection.set_steering(a)
+    print(f"{steering.name} 조향장치를 선택하셨습니다.")
 
 
-def is_valid_check():
-    if q0 == CarType.SEDAN and q2 == BrakeType.CONTINENTAL:
+def is_valid_check(selection):
+    if selection.car_type == CarType.SEDAN and selection.brake == BrakeType.CONTINENTAL:
         return False
-    if q0 == CarType.SUV and q1 == EngineType.TOYOTA:
+    if selection.car_type == CarType.SUV and selection.engine == EngineType.TOYOTA:
         return False
-    if q0 == CarType.TRUCK and q1 == EngineType.WIA:
+    if selection.car_type == CarType.TRUCK and selection.engine == EngineType.WIA:
         return False
-    if q0 == CarType.TRUCK and q2 == BrakeType.MANDO:
+    if selection.car_type == CarType.TRUCK and selection.brake == BrakeType.MANDO:
         return False
-    if q2 == BrakeType.BOSCH and q3 != SteeringType.BOSCH:
+    if selection.brake == BrakeType.BOSCH and selection.steering != SteeringType.BOSCH:
         return False
     return True
 
 
-def run_produced_car():
-    if not is_valid_check():
+def run_produced_car(selection):
+    if not is_valid_check(selection):
         print("자동차가 동작되지 않습니다")
         return
-    if q1 == EngineType.BROKEN:
+    if selection.engine == EngineType.BROKEN:
         print("엔진이 고장나있습니다.")
         print("자동차가 움직이지 않습니다.")
         return
 
-    print(f"Car Type : {q0.label}")
-    print(f"Engine   : {q1.label}")
-    print(f"Brake    : {q2.label}")
-    print(f"Steering : {q3.label}")
+    print(f"Car Type : {selection.car_type.label}")
+    print(f"Engine   : {selection.engine.label}")
+    print(f"Brake    : {selection.brake.label}")
+    print(f"Steering : {selection.steering.label}")
 
     print("자동차가 동작됩니다.")
 
 
-def test_produced_car():
-    if q0 == CarType.SEDAN and q2 == BrakeType.CONTINENTAL:
+def test_produced_car(selection):
+    if selection.car_type == CarType.SEDAN and selection.brake == BrakeType.CONTINENTAL:
         print("FAIL\nSedan에는 Continental제동장치 사용 불가")
-    elif q0 == CarType.SUV and q1 == EngineType.TOYOTA:
+    elif selection.car_type == CarType.SUV and selection.engine == EngineType.TOYOTA:
         print("FAIL\nSUV에는 TOYOTA엔진 사용 불가")
-    elif q0 == CarType.TRUCK and q1 == EngineType.WIA:
+    elif selection.car_type == CarType.TRUCK and selection.engine == EngineType.WIA:
         print("FAIL\nTruck에는 WIA엔진 사용 불가")
-    elif q0 == CarType.TRUCK and q2 == BrakeType.MANDO:
+    elif selection.car_type == CarType.TRUCK and selection.brake == BrakeType.MANDO:
         print("FAIL\nTruck에는 Mando제동장치 사용 불가")
-    elif q2 == BrakeType.BOSCH and q3 != SteeringType.BOSCH:
+    elif selection.brake == BrakeType.BOSCH and selection.steering != SteeringType.BOSCH:
         print("FAIL\nBosch제동장치에는 Bosch조향장치 이외 사용 불가")
     else:
         print("PASS")
@@ -166,6 +157,7 @@ def test_produced_car():
 
 def main():
     step = 0
+    selection = CarSelection()
     while True:
         show_menu(step)
         buf = input("INPUT > ").strip()
@@ -193,29 +185,29 @@ def main():
             continue
 
         if step == 0:
-            select_car_type(ans)
+            select_car_type(selection, ans)
             delay(800)
             step = 1
         elif step == 1:
-            select_engine(ans)
+            select_engine(selection, ans)
             delay(800)
             step = 2
         elif step == 2:
-            select_brake(ans)
+            select_brake(selection, ans)
             delay(800)
             step = 3
         elif step == 3:
-            select_steering(ans)
+            select_steering(selection, ans)
             delay(800)
             step = 4
         elif step == 4:
             if ans == 1:
-                run_produced_car()
+                run_produced_car(selection)
                 delay(2000)
             elif ans == 2:
                 print("Test...")
                 delay(1500)
-                test_produced_car()
+                test_produced_car(selection)
                 delay(2000)
 
 
