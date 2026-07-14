@@ -1,8 +1,9 @@
 import sys
 import time
 
-from parts import CarType, EngineType, BrakeType, SteeringType
+from parts import EngineType
 from selection import CarSelection
+from rules import find_violations
 
 CLEAR_SCREEN = "\033[H\033[2J"
 
@@ -110,17 +111,7 @@ def select_steering(selection, a):
 
 
 def is_valid_check(selection):
-    if selection.car_type == CarType.SEDAN and selection.brake == BrakeType.CONTINENTAL:
-        return False
-    if selection.car_type == CarType.SUV and selection.engine == EngineType.TOYOTA:
-        return False
-    if selection.car_type == CarType.TRUCK and selection.engine == EngineType.WIA:
-        return False
-    if selection.car_type == CarType.TRUCK and selection.brake == BrakeType.MANDO:
-        return False
-    if selection.brake == BrakeType.BOSCH and selection.steering != SteeringType.BOSCH:
-        return False
-    return True
+    return not find_violations(selection)
 
 
 def run_produced_car(selection):
@@ -141,16 +132,9 @@ def run_produced_car(selection):
 
 
 def test_produced_car(selection):
-    if selection.car_type == CarType.SEDAN and selection.brake == BrakeType.CONTINENTAL:
-        print("FAIL\nSedan에는 Continental제동장치 사용 불가")
-    elif selection.car_type == CarType.SUV and selection.engine == EngineType.TOYOTA:
-        print("FAIL\nSUV에는 TOYOTA엔진 사용 불가")
-    elif selection.car_type == CarType.TRUCK and selection.engine == EngineType.WIA:
-        print("FAIL\nTruck에는 WIA엔진 사용 불가")
-    elif selection.car_type == CarType.TRUCK and selection.brake == BrakeType.MANDO:
-        print("FAIL\nTruck에는 Mando제동장치 사용 불가")
-    elif selection.brake == BrakeType.BOSCH and selection.steering != SteeringType.BOSCH:
-        print("FAIL\nBosch제동장치에는 Bosch조향장치 이외 사용 불가")
+    violations = find_violations(selection)
+    if violations:
+        print(f"FAIL\n{violations[0]}")
     else:
         print("PASS")
 
