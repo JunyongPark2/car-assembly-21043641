@@ -2,7 +2,7 @@ import pytest
 
 from parts import CarType, EngineType, BrakeType, SteeringType
 from selection import CarSelection
-from assemble_actions import (
+from actions import (
     select_car_type,
     select_engine,
     select_brake,

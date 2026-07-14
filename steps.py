@@ -1,8 +1,8 @@
-from typing import Callable, List, Optional, Protocol, Tuple
+from typing import List, Optional, Protocol, Tuple
 
 from selection import CarSelection
-from assemble_actions import select_car_type, select_engine, select_brake, select_steering
-from assemble_actions import run_produced_car, test_produced_car
+from actions import select_car_type, select_engine, select_brake, select_steering
+from actions import run_produced_car, test_produced_car
 
 Action = Tuple[str, int]  # (message, delay_ms)
 

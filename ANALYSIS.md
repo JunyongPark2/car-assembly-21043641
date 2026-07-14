@@ -1,4 +1,8 @@
-# assemble.py 코드 분석
+# assemble.py 코드 분석 (리팩토링 전 — 역사적 기록)
+
+> 이 문서는 Phase 1~7 리팩토링을 시작하기 전 `assemble.py` 단일 파일 상태를
+> 분석한 기록이다. 리팩토링 후 최종 구조는 `ARCHITECTURE.md`를 참고.
+
 
 ## 개요
 대화형 CLI로 차량(Sedan/SUV/Truck)에 엔진/제동장치/조향장치를 조합해
